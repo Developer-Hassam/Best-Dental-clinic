@@ -269,8 +269,15 @@ function AboutSection() {
 }
 
 function ServicesSection() {
-  const [expanded, setExpanded] = useState<string | null>(null)
+  const [selectedService, setSelectedService] = useState<typeof siteConfig.services[0] | null>(null)
   const revealRef = useScrollReveal()
+
+  const openWhatsAppEnquiry = (title: string) => {
+    const text = encodeURIComponent(
+      `Assalam o Alaikum! I would like to book a consultation / enquiry for *${title}* at ${siteConfig.clinicName}.`
+    )
+    window.open(`https://wa.me/${siteConfig.whatsapp.number}?text=${text}`, '_blank')
+  }
 
   return (
     <section id="services" className="py-20 sm:py-28 bg-white">
@@ -281,7 +288,7 @@ function ServicesSection() {
             Comprehensive Dental Care
           </h2>
           <p className="text-slate-500 text-lg leading-relaxed">
-            From laser whitening and invisible aligners to pain-free root canals and dental implants — modern dentistry for all ages.
+            From laser whitening and invisible aligners to pain-free root canals and dental implants — click any service to view treatment details & pricing.
           </p>
         </div>
 
@@ -289,22 +296,18 @@ function ServicesSection() {
           {siteConfig.services.map((s) => (
             <div
               key={s.id}
-              onClick={() => setExpanded(expanded === s.title ? null : s.title)}
-              className="stagger-item bg-white border border-slate-200/80 hover:border-teal-400 rounded-2xl overflow-hidden text-left hover:shadow-lg transition-all duration-300 group flex flex-col cursor-pointer"
+              onClick={() => setSelectedService(s)}
+              className="stagger-item bg-white border border-slate-200/80 hover:border-teal-400 rounded-2xl overflow-hidden text-left hover:shadow-xl transition-all duration-300 group flex flex-col cursor-pointer transform hover:-translate-y-1"
             >
-              <div className="h-40 overflow-hidden relative bg-teal-900/10 w-full">
+              <div className="h-44 overflow-hidden relative bg-slate-900 w-full">
                 <img
                   src={s.image}
                   alt={s.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                   loading="lazy"
-                  onError={(e) => {
-                    // Fallback to stylized gradient if external image is blocked
-                    e.currentTarget.style.display = 'none'
-                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/20 to-transparent" />
-                <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-teal-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-2xs">
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/20 to-transparent" />
+                <span className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs text-teal-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-xs">
                   {s.badge}
                 </span>
               </div>
@@ -319,15 +322,100 @@ function ServicesSection() {
                 </div>
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-teal-600 group-hover:text-teal-700">
                   <span>Enquire Treatment</span>
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="group-hover:translate-x-1.5 transition-transform font-bold text-sm">→</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <p className="text-slate-400 text-sm mt-10 text-center">Need advice on a specific treatment? Contact our team on WhatsApp for free consultation</p>
+        <p className="text-slate-400 text-sm mt-10 text-center">Tap any service for details, treatment duration & cost estimation</p>
       </div>
+
+      {/* --- Interactive Service Details Modal Popup --- */}
+      {selectedService && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-xl w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-scaleUp">
+            {/* Modal Image Header */}
+            <div className="relative h-56 bg-slate-900 shrink-0">
+              <img
+                src={selectedService.image}
+                alt={selectedService.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+              <button
+                onClick={() => setSelectedService(null)}
+                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white flex items-center justify-center transition-colors cursor-pointer text-sm backdrop-blur-xs"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+              <div className="absolute bottom-4 left-6 right-6 text-white">
+                <span className="inline-block bg-teal-500/90 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
+                  {selectedService.badge}
+                </span>
+                <h3 className="font-bold text-2xl text-white leading-tight">
+                  {selectedService.title}
+                </h3>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-5 flex-1 text-slate-700">
+              <p className="text-sm leading-relaxed text-slate-600">
+                {selectedService.fullDetails}
+              </p>
+
+              {/* Quick Info Grid */}
+              <div className="grid grid-cols-3 gap-2.5 bg-slate-50 border border-slate-100 p-3.5 rounded-2xl text-center">
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Duration</p>
+                  <p className="text-xs font-bold text-slate-900 mt-0.5">{selectedService.duration}</p>
+                </div>
+                <div className="border-x border-slate-200/60">
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Pain Level</p>
+                  <p className="text-xs font-bold text-teal-700 mt-0.5">{selectedService.painLevel}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Est. Investment</p>
+                  <p className="text-xs font-bold text-slate-900 mt-0.5">{selectedService.estimatedCost}</p>
+                </div>
+              </div>
+
+              {/* Key Highlights */}
+              <div>
+                <p className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Treatment Highlights</p>
+                <div className="space-y-1.5">
+                  {selectedService.highlights.map((h, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
+                      <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-[10px] shrink-0">✓</span>
+                      <span>{h}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer CTAs */}
+            <div className="p-5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-2.5">
+              <button
+                onClick={() => openWhatsAppEnquiry(selectedService.title)}
+                className="flex-1 flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold py-3 rounded-xl transition-colors shadow-sm cursor-pointer"
+              >
+                <WhatsAppIcon className="w-4 h-4" />
+                Book via WhatsApp
+              </button>
+              <a
+                href={PHONE_URL}
+                className="flex items-center justify-center gap-2 border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-sm font-semibold px-5 py-3 rounded-xl transition-colors cursor-pointer"
+              >
+                Call Clinic
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

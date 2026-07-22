@@ -41,12 +41,12 @@ export const siteConfig = {
 
   // Contact Information
   phone: {
-    display: "0300-1234567",
-    tel: "+923001234567"
+    display: "0328-8598275",
+    tel: "+923288598275"
   },
   whatsapp: {
-    number: "923001234567",
-    display: "0300-1234567"
+    number: "923288598275",
+    display: "0328-8598275"
   },
   address: {
     line1: "Suite 102, Medical Plaza",

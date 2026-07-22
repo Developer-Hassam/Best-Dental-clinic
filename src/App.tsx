@@ -1,14 +1,6 @@
 import { useState, useEffect } from 'react'
 import { siteConfig } from './siteConfig'
 import { useScrollReveal } from './useScrollReveal'
-import {
-  EditUserProfileDrawer,
-  ManageTestimonialsModal,
-  ManageBannerSlidersModal,
-  EditBrandLabDrawer,
-  TreatmentPlanModal,
-  PatientDentalChartingModal
-} from './components/AdminDrawersAndModals'
 
 const WHATSAPP_URL = `https://wa.me/${siteConfig.whatsapp.number}`
 const PHONE_URL = `tel:${siteConfig.phone.tel}`
@@ -778,103 +770,7 @@ function FloatingWhatsApp() {
   )
 }
 
-function FloatingAdminToolbar({
-  onOpenProfile,
-  onOpenTestimonials,
-  onOpenBanners,
-  onOpenBrandLab,
-  onOpenTreatmentPlan,
-  onOpenDentalChart
-}: {
-  onOpenProfile: () => void
-  onOpenTestimonials: () => void
-  onOpenBanners: () => void
-  onOpenBrandLab: () => void
-  onOpenTreatmentPlan: () => void
-  onOpenDentalChart: () => void
-}) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="fixed bottom-6 left-6 z-40">
-      {open ? (
-        <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-2xl border border-slate-800 space-y-2.5 w-72 animate-scaleUp">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-400">Image Upload Forms (6)</span>
-            <button
-              onClick={() => setOpen(false)}
-              className="text-slate-400 hover:text-white text-xs p-1"
-            >
-              ✕ Close
-            </button>
-          </div>
-
-          <div className="space-y-1.5 text-xs">
-            <button
-              onClick={() => { onOpenProfile(); setOpen(false) }}
-              className="w-full text-left px-3 py-2 rounded-lg bg-slate-800 hover:bg-teal-600 transition-colors flex items-center justify-between font-medium cursor-pointer"
-            >
-              <span>👤 Edit User Profile</span>
-              <span className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-300">Profile Pic</span>
-            </button>
-
-            <button
-              onClick={() => { onOpenTestimonials(); setOpen(false) }}
-              className="w-full text-left px-3 py-2 rounded-lg bg-slate-800 hover:bg-teal-600 transition-colors flex items-center justify-between font-medium cursor-pointer"
-            >
-              <span>💬 Manage Testimonials</span>
-              <span className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-300">Avatar</span>
-            </button>
-
-            <button
-              onClick={() => { onOpenBanners(); setOpen(false) }}
-              className="w-full text-left px-3 py-2 rounded-lg bg-slate-800 hover:bg-teal-600 transition-colors flex items-center justify-between font-medium cursor-pointer"
-            >
-              <span>🖼️ Manage Banner Sliders</span>
-              <span className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-300">Banner</span>
-            </button>
-
-            <button
-              onClick={() => { onOpenBrandLab(); setOpen(false) }}
-              className="w-full text-left px-3 py-2 rounded-lg bg-slate-800 hover:bg-teal-600 transition-colors flex items-center justify-between font-medium cursor-pointer"
-            >
-              <span>🏢 Edit Brand / Lab</span>
-              <span className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-300">Logo</span>
-            </button>
-
-            <button
-              onClick={() => { onOpenTreatmentPlan(); setOpen(false) }}
-              className="w-full text-left px-3 py-2 rounded-lg bg-slate-800 hover:bg-teal-600 transition-colors flex items-center justify-between font-medium cursor-pointer"
-            >
-              <span>📋 Treatment Plan</span>
-              <span className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-300">Attachment</span>
-            </button>
-
-            <button
-              onClick={() => { onOpenDentalChart(); setOpen(false) }}
-              className="w-full text-left px-3 py-2 rounded-lg bg-slate-800 hover:bg-teal-600 transition-colors flex items-center justify-between font-medium cursor-pointer"
-            >
-              <span>🦷 Patient Dental Chart</span>
-              <span className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-300">X-Ray / Scan</span>
-            </button>
-          </div>
-        </div>
-      ) : (
-        <button
-          onClick={() => setOpen(true)}
-          className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-3 rounded-full shadow-xl border border-slate-800 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
-        >
-          <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-          Image Upload Locations (6)
-        </button>
-      )}
-    </div>
-  )
-}
-
 export default function App() {
-  const [activeModal, setActiveModal] = useState<string | null>(null)
-
   return (
     <div className="min-h-screen font-sans bg-white selection:bg-teal-100 selection:text-teal-900">
       <Navbar />
@@ -888,47 +784,6 @@ export default function App() {
       <ContactSection />
       <Footer />
       <FloatingWhatsApp />
-
-      {/* Floating Admin Control Bar */}
-      <FloatingAdminToolbar
-        onOpenProfile={() => setActiveModal('profile')}
-        onOpenTestimonials={() => setActiveModal('testimonials')}
-        onOpenBanners={() => setActiveModal('banners')}
-        onOpenBrandLab={() => setActiveModal('brandLab')}
-        onOpenTreatmentPlan={() => setActiveModal('treatmentPlan')}
-        onOpenDentalChart={() => setActiveModal('dentalChart')}
-      />
-
-      {/* 6 Required Location Drawers & Modals */}
-      <EditUserProfileDrawer
-        isOpen={activeModal === 'profile'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <ManageTestimonialsModal
-        isOpen={activeModal === 'testimonials'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <ManageBannerSlidersModal
-        isOpen={activeModal === 'banners'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <EditBrandLabDrawer
-        isOpen={activeModal === 'brandLab'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <TreatmentPlanModal
-        isOpen={activeModal === 'treatmentPlan'}
-        onClose={() => setActiveModal(null)}
-      />
-
-      <PatientDentalChartingModal
-        isOpen={activeModal === 'dentalChart'}
-        onClose={() => setActiveModal(null)}
-      />
     </div>
   )
 }
